@@ -1,7 +1,5 @@
-image: Visual Studio 2022
-
-# build_cloud: DESKTOP-OAJ89C1
-# image: Windows
+build_cloud: DESKTOP-4OP2NEI
+image: Windows
 
 version: '{branch}.{build}'
 cache:
