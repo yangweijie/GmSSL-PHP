@@ -1,0 +1,52 @@
+image: Visual Studio 2022
+
+# build_cloud: DESKTOP-OAJ89C1
+# image: Windows
+
+version: '{branch}.{build}'
+cache:
+  - c:\build-cache -> .appveyor.yml, .appveyor/*.cmd
+
+environment:
+  PHP_BUILD_CACHE_BASE_DIR: c:\build-cache
+  PHP_BUILD_OBJ_DIR: c:\obj
+  PHP_BUILD_CACHE_SDK_DIR: c:\build-cache\sdk
+  PHP_BUILD_SDK_BRANCH: php-sdk-2.2.0
+  SDK_REMOTE: https://github.com/OSTC/php-sdk-binary-tools.git
+  SDK_BRANCH: php-sdk-2.2.0
+  APPVEYOR_REPO_TAG_NAME: 1.1.0
+  APPVEYOR_RDP_PASSWORD: Ya123456!@#
+
+  matrix:
+    - PHP_REL: 8.3
+      ARCHITECTURE: x64
+      ZTS_STATE: enable
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      PHP_BUILD_CRT: vc16
+    - PHP_REL: 8.3
+      ARCHITECTURE: x64
+      ZTS_STATE: disable
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      PHP_BUILD_CRT: vc16
+init:
+# - ps: iex ((new-object net.webclient).DownloadString('https://raw.kkgithub.com/yangweijie/php-xhprof-extension/master/enable-rdp1.ps1'))
+
+on_finish:
+# - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.kkgithub.com/yangweijie/php-xhprof-extension/master/enable-rdp1.ps1'))
+
+install:
+  - .appveyor\install.cmd
+
+build_script:
+  - .appveyor\build.cmd
+deploy:
+  release: php_gmssl-v1.1.0
+  description: 'release php_gmssl windows'
+  provider: GitHub
+  auth_token:
+    secure: 4BISwFjqqswZYt/WHI0FamI/FD4oSsX/nYk/fD+qQeehSWPQugixI1DaMgXgatmi # your encrypted token from GitHub
+  draft: false
+  prerelease: false
+  force_update: true
+  on:
+    branch: master                 # release from master branch only
